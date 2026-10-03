@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Swish Data Genie</title>
+<style>
+  :root { --bg:#f7f8fa; --fg:#1b1f24; --muted:#5b6570; --card:#fff; --line:#d9dee4; --accent:#0b6bcb; --warn:#8a5a00; --warnbg:#fff4d6; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171a; --fg:#e8ebee; --muted:#9aa5b1; --card:#1d2227; --line:#333b44; --accent:#5aa9ff; --warn:#ffd27a; --warnbg:#3a2f12; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:960px; margin:0 auto; padding:20px 16px 48px; }
+  h1 { margin:0 0 4px; font-size:1.6rem; }
+  .sub { color:var(--muted); margin:0 0 16px; }
+  .note { background:var(--warnbg); color:var(--warn); padding:10px 12px; border-radius:6px; margin-bottom:16px; font-size:.9rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px; margin-bottom:16px; }
+  .filters { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+  label { display:block; font-size:.8rem; color:var(--muted); margin-bottom:4px; }
+  select { width:100%; padding:7px; font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--line); border-radius:6px; }
+  .count { font-size:2rem; font-weight:700; }
+  button { font:inherit; padding:8px 14px; border-radius:6px; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  pre { margin:0; white-space:pre-wrap; word-break:break-word; font:13px/1.45 ui-monospace, Consolas, monospace; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.85rem; }
+  th, td { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--muted); font-weight:600; }
+  #trunc { color:var(--warn); background:var(--warnbg); padding:6px 10px; border-radius:6px; margin:8px 0 0; }
+  #status-msg { color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Swish Data Genie</h1>
+  <p class="sub">Pick filters, get a customer count, a preview, the SQL that ran, and a CSV.</p>
+  <div class="note">Data is synthetic and frozen at 15 Sep 2026. The guardrails here (dropdowns only, one approved SQL template, row caps) are a design demonstration; this page runs in your browser and never connects to BigQuery. Real guardrails would be server-side. Statuses describe customers, not single orders.</div>
+
+  <div class="card">
+    <div class="filters">
+      <div><label for="city">City</label><select id="city" disabled></select></div>
+      <div><label for="channel">Channel</label><select id="channel" disabled></select></div>
+      <div><label for="month">Signup month</label><select id="month" disabled></select></div>
+      <div><label for="status">Status</label><select id="status" disabled></select></div>
+    </div>
+    <p id="status-msg">Loading data…</p>
+  </div>
+
+  <div class="card">
+    <div>Matching customers</div>
+    <div class="count" id="count">–</div>
+    <p style="margin:8px 0 0"><button id="download" disabled>Download CSV</button></p>
+    <div id="trunc" hidden></div>
+  </div>
+
+  <div class="card">
+    <strong>SQL that ran</strong>
+    <pre id="sql"></pre>
+  </div>
+
+  <div class="card">
+    <strong>Preview (first 50 rows)</strong>
+    <div class="tablewrap"><table id="preview"></table></div>
+  </div>
+</main>
+<script src="vendor/sql-wasm.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
